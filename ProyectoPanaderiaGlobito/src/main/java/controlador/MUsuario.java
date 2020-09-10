@@ -13,6 +13,112 @@ public class MUsuario {
    public MUsuario(){
        
    }
+      public static int Guardar(String user,String pass, int id){
+    int estatus=0; 
+        MUsuario u = null;
+        Connection con=null;
+        PreparedStatement ps=null;
+        ResultSet rs=null;
+    try{
+           con=conexion.getConexion();
+           String q ="select * from MUsuario where user_usu = ? and pass_usu = ?";
+           ps=con.prepareStatement(q);
+           ps.setString(1,user);
+           ps.setString(2,pass);
+           ps.setInt(3,id);
+           estatus=ps.executeUpdate();
+           con.close();
+        
+    }catch(Exception e){
+        System.out.println("No conecto con la tabla");
+            System.out.println(e.getMessage());
+            System.out.println(e.getStackTrace());
+            u=null;
+    }
+    return estatus;
+   }
+   public static int Eliminar(int id){
+       int estatus=0;
+       MUsuario u = null;
+        Connection con=null;
+        PreparedStatement ps=null;
+        ResultSet rs=null;
+      try{
+          con=conexion.getConexion();
+          String q ="Delete from datos where id = ?";
+          ps=con.prepareStatement(q);
+           ps.setInt(1,id);
+           estatus=ps.executeUpdate();
+           con.close();
+          
+          
+      }catch(Exception e){
+          System.out.println("No conecto con la tabla");
+            System.out.println(e.getMessage());
+            System.out.println(e.getStackTrace());
+            u=null;
+      }
+      return estatus;
+      
+   }
+   public static MUsuario getUsuarioById(int id){
+    int estatus=0;
+       MUsuario u = new MUsuario();
+        Connection con=null;
+        PreparedStatement ps=null;
+        try{
+            con=conexion.getConexion();
+          String sql ="Select * from Datos where id=?";
+          ps=con.prepareStatement(sql);
+           ps.setInt(1,id);
+           ResultSet rs = ps.executeQuery();
+           con.close();
+           if(rs.next()){
+               u.setId_usu(rs.getInt(1));
+               u.setNom_usu(rs.getString(2));
+               u.setAppat_usu(rs.getString(3));
+               u.setPass_usu(rs.getString(4));
+               u.setPriv_usu(rs.getString(5));
+               con.close();
+               
+           }
+        }catch(Exception e){
+          System.out.println("No conecto con la tabla");
+            System.out.println(e.getMessage());
+            System.out.println(e.getStackTrace());
+            u=null;  
+        }
+        return  u;
+   }
+   public static List<MUsuario> GetAllUsuarios(){
+       List<MUsuario> lista=new ArrayList<MUsuario>();
+       Connection con=null;
+        PreparedStatement ps=null;
+    
+       try{
+         con=conexion.getConexion();
+          String sql ="Select * from Datos";
+          ps=con.prepareStatement(sql);
+          ResultSet rs = ps.executeQuery();
+          while(rs.next()){
+              MUsuario u=new MUsuario();
+             u.setId_usu(rs.getInt(1));
+               u.setNom_usu(rs.getString(2));
+               u.setAppat_usu(rs.getString(3));
+               u.setPass_usu(rs.getString(4));
+               u.setPriv_usu(rs.getString(5));
+               lista.add(u);
+          }
+          
+           con.close();   
+       }catch(Exception e){
+          System.out.println("No conecto con la tabla");
+            System.out.println(e.getMessage());
+            System.out.println(e.getStackTrace());
+              
+       }
+       return lista;
+   }
 
     public int getId_usu() {
         return id_usu;
